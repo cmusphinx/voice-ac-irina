@@ -1,0 +1,106 @@
+plugins {
+    id 'de.dfki.mary.voicebuilding-festvox' version '5.2.0'
+    id 'de.dfki.mary.voicebuilding-legacy' version '5.2.0'
+}
+
+group 'de.dfki.mary'
+version '5.2'
+
+voice {
+    name = 'ac-irina'
+    language = 'ru'
+    region = 'RU'
+    gender = 'female'
+    type = 'unit selection'
+    description = 'A female Russian unit selection voice'
+    license {
+        name = 'Creative Commons Attribution-ShareAlike 3.0 Unported'
+        shortName = 'CC-BY-SA'
+        url = 'http://mary.dfki.de/download/by-sa-3.0.html'
+    }
+    samplingRate = 16000
+}
+
+repositories {
+    ivy {
+        url 'http://mary.dfki.de/repo'
+        layout 'maven'
+    }
+    ivy {
+        url 'http://alphacephei.com/test/tts/'
+        layout 'pattern', {
+            artifact '[module]-[revision].[ext]'
+        }
+    }
+}
+
+dependencies {
+    data group: 'com.alphacephei', name: 'ac_ru_irina_clunits', version: '0.6', ext: 'tar.bz2'
+}
+
+def mapping = [
+    'pau' : '_',
+    'ssil': '_',
+]
+
+task simpleLab(type: Copy) {
+    from processDataResources
+    into "$project.buildDir/lab"
+    include '*.lab'
+    filter {
+        def label = it.trim().split(/\s+/, 3).last()
+        it.trim().replaceAll(label) {
+            mapping[it] ?: it
+        }
+    }
+}
+
+legacyInit {
+    dependsOn wav, simpleLab, text
+    def basenameListFile = file("$buildDir/basenames.lst")
+    outputs.files basenameListFile
+    doLast {
+        basenameListFile.withWriter { basenameList ->
+            fileTree(wav.destDir).collect {
+                it.name - '.wav'
+            }.minus([
+                'utt_000064',
+                'utt_000208',
+                'utt_000214',
+                'utt_000217',
+                'utt_000255',
+                'utt_000786',
+                'utt_001014',
+                'utt_001026',
+                'utt_001034',
+                'utt_001090',
+                'utt_001172',
+                'utt_001233',
+                'utt_001311',
+                'utt_001419',
+                'utt_001474',
+                'utt_001631',
+                'utt_001635',
+                'utt_001757',
+                'utt_001789',
+                'utt_001827',
+                'utt_001831',
+                'utt_001840',
+                'utt_001861',
+                'utt_001873',
+                'utt_001879',
+                'utt_001961',
+                'utt_002035',
+                'utt_002181',
+                'utt_002194',
+                'utt_002222',
+                'utt_002356',
+                'utt_002370',
+                'utt_002421',
+                'utt_002442'
+            ]).each {
+                basenameList.writeLine it
+            }
+        }
+    }
+}

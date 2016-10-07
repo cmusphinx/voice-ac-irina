@@ -1,0 +1,9 @@
+pluginRepositories {
+    maven {
+        url 'https://dl.bintray.com/marytts/marytts'
+    }
+    maven {
+        url 'https://jcenter.bintray.com'
+    }
+}
+rootProject.name = 'voice-ac-irina'

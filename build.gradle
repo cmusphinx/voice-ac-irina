@@ -27,7 +27,7 @@ repositories {
         layout 'maven'
     }
     ivy {
-        url 'http://alphacephei.com/test/tts/'
+        url 'http://alphacephei.com/tts/'
         layout 'pattern', {
             artifact '[module]-[revision].[ext]'
         }
